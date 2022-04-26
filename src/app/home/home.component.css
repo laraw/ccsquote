@@ -1,0 +1,29 @@
+.or {
+    color: darkblue;
+}
+
+a {
+    text-decoration: underline !important;
+}
+
+.btn-info {
+    color: #fff;
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+}
+
+.float-right {
+    float: right !important;
+}
+
+thead {
+    font-size: 18px;
+}
+
+.form-switch .form-check-input {
+    height: 1.5em
+}
+
+.form-switch {
+    margin-top: 10px
+}

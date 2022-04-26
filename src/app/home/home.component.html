@@ -1,0 +1,375 @@
+<div class="noprint">
+
+    <h1>About this tool</h1>
+
+    <p>
+        This calculator is designed to help Centres to provide more accurate child care subsidy calculations to their families. Unlike other tools on the web, this calculator takes into account children who attend different session times throughout the week,
+        and calculates the out of pocket cost for both week 1 and week 2 of the CCS fortnight.
+
+    </p>
+    <p>
+
+        Please Note: 5 per cent (5%) of your weekly Child Care Subsidy entitlement will be withheld until the end-of-year reconciliation after the end of each financial year. The withholding amount has been factored into this child care subsidy estimate.
+    </p>
+
+
+</div>
+
+
+<div class="quote-section my-3 p-3 bg-white rounded box-shadow ">
+    <h4 class="d-flex justify-content-between align-items-center mb-3 noprint">
+        <span class="text-muted">Step 1</span>
+
+    </h4>
+    <div class="noprint">
+        Determine the child care subsidy entitlement.
+    </div>
+    <p class="noprint" style="color: #e8639b; font-weight: 800"> I don't know the CCS % or CCS hours </p>
+    <div class="row noprint">
+        <div class="col-md-6 mb-3">
+            <div class="form-group">
+                <label for="selectedYear"> Select the financial year for the quote </label>
+
+                <select class="form-control" [(ngModel)]="selectedYear" id="" (change)="getSettings()">
+          <option>2021/2022</option>
+          <option>2020/2021</option>
+          
+          
+        </select>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="income"> Enter the  yearly family taxable income:  </label>
+            <input [(ngModel)]="income" (blur)="setCCSPercentage($event)" name="income" id="income" type="number" min="0" max="999999" class="form-control" />
+
+        </div>
+        <div class="col-md-6 mb-3 noprint">
+            <label for="activityhrs"> Select the activity hours across a fortnight: </label> <br />
+            <select class="form-control form-select mb-3" (change)="setActivityHours($event)">
+        <option> -- Please select -- </option>
+
+        <option> 8 to 16 hours </option>
+        <option> 17 to 48 hours </option>
+        <option> more than 48 hours </option>
+      </select>
+            <!--<input [(ngModel)]="activityhrs" name="activityhrs" id="activityhrs" type="number" min="0" max="120" class="form-control" />-->
+        </div>
+        <div class="col-md-6 mb-3 noprint">
+            <div class="form-check form-switch">
+                <input class="form-check-input" (change)="setCCSPercentage($event)" [(ngModel)]="secondchildsubsidy" type="checkbox" id="secondchildsubsidy">
+                <label class="form-check-label" for="secondchildsubsidy">This child meets the second child additional child care subsidy <button type="button" class="btn btn-outline-secondary" ngbTooltip="From 7th March 2022 families with more than one child 5 years or under in care will get a higher subsidy for their second child and younger children. Families who are already eligible for child care subsidy and who earn less than $354,305 are eligible." tooltipClass="my-custom-class">
+                  <i class="fa fa-question" aria-hidden="true"></i>
+                </button>  </label>
+
+            </div>
+        </div>
+    </div>
+
+    <hr class="noprint" />
+    <span class="noprint" style="color:#63d2e8; font-weight: 800"> OR </span>
+    <hr />
+    <p class="noprint" style="color: #e8639b; font-weight: 800"> I know the CCS % and CCS hours </p>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label for="ccs"> Your CCS % </label>
+            <input [(ngModel)]="ccs" name="ccs" id="ccs" type="number" class="form-control" (change)="ccsValid($event)" />
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="ccshrs"> Your CCS hours </label>
+            <input [(ngModel)]="ccshrs" name="ccshrs" id="ccshrs" type="number" class="form-control" (change)="ccsValid($event)" />
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <h4 class="d-flex justify-content-between align-items-center mb-3 noprint">
+                <span class="text-muted">Step 2</span>
+
+            </h4>
+        </div>
+    </div>
+    <div class="row">
+
+
+
+        <div class="col-md-8 order-md-1 mb-8">
+
+            <form [formGroup]="quoteForm" (ngSubmit)="onSubmit()">
+                <div class="noprint" *ngIf="showWeek2">
+                    Enter the hours and fees for each day of the fortnight.
+                </div>
+                <div *ngIf="showWeek2" class="noprint alert alert-warning" role="alert">
+                    <a style="text-decoration: underline; color: royalblue;" (click)="numberweeks('week')"> Click here if the child is on a weekly booking pattern. </a>
+                </div>
+                <div class="noprint" *ngIf="!showWeek2">
+                    Enter the hours and fees for each day of the week.
+                </div>
+                <div *ngIf="!showWeek2" class="noprint alert alert-warning" role="alert">
+                    <a style="text-decoration: underline; color: royalblue;" (click)="numberweeks('fortnight')"> Click here if the child is on a fortnightly booking pattern.  </a>
+                </div>
+                <table class="table" id="room-quote">
+                    <thead>
+                        <tr>
+
+                            <th>
+                                Mon
+                            </th>
+                            <th>
+                                Tues
+                            </th>
+                            <th>
+                                Wed
+                            </th>
+                            <th>
+                                Thurs
+                            </th>
+                            <th>
+                                Fri
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngIf="showWeek2" class="week2hrs">
+                            <td style="font-weight: 600"> Week 1 </td>
+                            <td> &nbsp; </td>
+                            <td> &nbsp; </td>
+                            <td> &nbsp; </td>
+                            <td> &nbsp; </td>
+                        </tr>
+                        <tr class="week1hrs">
+
+                            <td>
+                                <div class="form-group">
+                                    <label for="Fee1">Fee</label>
+                                    <input type="number" class="form-control" formControlName="Fee1" id="Fee1" placeholder="" dayid="1" (change)="addFee($event)">
+                                </div>
+                                <div class="form-group">
+                                    <label for="Session1">Hours</label>
+                                    <input type="number" class="form-control" formControlName="Session1" id="Session1" placeholder="" dayid="1" (change)="addSessions($event)">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <label for="Fee2">Fee</label>
+                                    <input type="number" class="form-control" formControlName="Fee2" id="Fee2" placeholder="" dayid="2" (change)="addFee($event)">
+                                </div>
+                                <div class="form-group">
+                                    <label for="Session2">Hours</label>
+                                    <input type="number" class="form-control" formControlName="Session2" id="Session2" placeholder="" dayid="2" (change)="addSessions($event)">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <label for="Fee3">Fee</label>
+                                    <input type="number" class="form-control" formControlName="Fee3" id="Fee3" placeholder="" dayid="3" (change)="addFee($event)">
+                                </div>
+                                <div class="form-group">
+                                    <label for="Session3">Hours</label>
+                                    <input type="number" class="form-control" formControlName="Session3" id="Session3" placeholder="" dayid="3" (change)="addSessions($event)">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <label for="Fee4">Fee</label>
+                                    <input type="number" class="form-control" formControlName="Fee4" id="Fee4" placeholder="" dayid="4" (change)="addFee($event)">
+                                </div>
+                                <div class="form-group">
+                                    <label for="Session4">Hours</label>
+                                    <input type="number" class="form-control" formControlName="Session4" id="Session4" placeholder="" dayid="4" (change)="addSessions($event)">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <label for="Fee5">Fee</label>
+                                    <input type="number" class="form-control" formControlName="Fee5" id="Fee5" placeholder="" dayid="5" (change)="addFee($event)">
+                                </div>
+                                <div class="form-group">
+                                    <label for="Session5">Hours</label>
+                                    <input type="number" class="form-control" formControlName="Session5" id="Session5" placeholder="" dayid="5" (change)="addSessions($event)">
+                                </div>
+                            </td>
+
+                        </tr>
+                        <tr *ngIf="showWeek2" class="week2hrs">
+                            <td style="font-weight: 600"> Week 2 </td>
+                            <td> &nbsp; </td>
+                            <td> &nbsp; </td>
+                            <td> &nbsp; </td>
+                            <td> &nbsp; </td>
+                        </tr>
+                        <tr *ngIf="showWeek2" class="week2hrs">
+
+                            <td>
+                                <div class="form-group">
+                                    <label for="Fee6">Fee</label>
+                                    <input type="number" class="form-control" formControlName="Fee6" id="Fee6" placeholder="" dayid="6" (change)="addFee($event)">
+                                </div>
+                                <div class="form-group">
+                                    <label for="Session6">Hours</label>
+                                    <input type="number" class="form-control" formControlName="Session6" id="Session6" placeholder="" dayid="6" (change)="addSessions($event)">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <label for="Fee7">Fee</label>
+                                    <input type="number" class="form-control" formControlName="Fee7" id="Fee7" placeholder="" dayid="7" (change)="addFee($event)">
+                                </div>
+                                <div class="form-group">
+                                    <label for="Session7">Hours</label>
+                                    <input type="number" class="form-control" formControlName="Session7" id="Session7" placeholder="" dayid="7" (change)="addSessions($event)">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <label for="Fee8">Fee</label>
+                                    <input type="number" class="form-control" formControlName="Fee8" id="Fee8" placeholder="" dayid="8" (change)="addFee($event)">
+                                </div>
+                                <div class="form-group">
+                                    <label for="Session8">Hours</label>
+                                    <input type="number" class="form-control" formControlName="Session8" id="Session8" placeholder="" dayid="8" (change)="addSessions($event)">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <label for="Fee9">Fee</label>
+                                    <input type="number" class="form-control" formControlName="Fee9" id="Fee9" placeholder="" dayid="9" (change)="addFee($event)">
+                                </div>
+                                <div class="form-group">
+                                    <label for="Session9">Hours</label>
+                                    <input type="number" class="form-control" formControlName="Session9" id="Session9" placeholder="" dayid="9" (change)="addSessions($event)">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <label for="Fee10">Fee</label>
+                                    <input type="number" class="form-control" formControlName="Fee10" id="Fee10" placeholder="" dayid="10" (change)="addFee($event)">
+                                </div>
+                                <div class="form-group">
+                                    <label for="Session10">Hours</label>
+                                    <input type="number" class="form-control" formControlName="Session10" id="Session10" placeholder="" dayid="10" (change)="addSessions($event)">
+                                </div>
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+                </table>
+                <br />
+                <br />
+                <div class="row noprint">
+
+                    <div class="col-md-6 mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="schoolAged" [(ngModel)]="schoolAged" [ngModelOptions]="{standalone: true}" [checked]="schoolAged">
+                            <label class="form-check-label" for="schoolAged">
+                Is the child a school-aged child?
+              </label>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="discount"> Discount %: </label>
+                        <input name="discount" id="discount" [(ngModel)]="discount" class="form-control" [ngModelOptions]="{standalone: true}" type="number" />
+
+                    </div>
+                </div>
+
+
+                <div class="row noprint">
+                    <div class="col">
+                        <button class="btn btn-success" (click)="calculateCCS()" [disabled]="!ccsEntered || !sessionsEntered">  <i class="fa fa-calculator" aria-hidden="true"></i> Calculate  </button>
+                    </div>
+                    <div class="col">
+                        <button class="btn btn-dark" (click)="reset()"> <i class="fa fa-undo" aria-hidden="true"></i> Reset  </button>
+                    </div>
+                    <div class="col">
+                        <button class=" float-right btn btn-info" (click)="print()"> <i class="fa fa-print" aria-hidden="true"></i> Print  </button>
+                    </div>
+                </div>
+
+
+            </form>
+
+
+
+
+
+
+
+        </div>
+        <div class="col-md-4 order-md-2 mb-4 my-4">
+            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted"> Calculated CCS </span>
+
+            </h4>
+            <ul class="list-group mb-3">
+                <li class="list-group-item d-flex justify-content-between lh-condensed">
+                    <div>
+                        <h6 class="my-0">Week 1 Fee</h6>
+                        <small class="text-muted results-full-fee">Full fee</small>
+                    </div>
+                    <span class="text-muted"> {{ week1fee }}  </span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between bg-light">
+                    <div class="text-success">
+                        <h6 class="my-0">Week 1 CCS</h6>
+                        <small>Child care subsidy entitlement</small>
+                    </div>
+                    <span> {{ week1ccs }}  </span>
+                </li>
+
+
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>Week 1 gap </span>
+                    <strong><span> {{ week1gap }} </span></strong>
+                </li>
+                <li class="list-group-item d-flex justify-content-between lh-condensed">
+                    <div>
+                        <h6 class="my-0">Week 2 Fee</h6>
+                        <small class="text-muted results-full-fee">Full fee</small>
+                    </div>
+                    <span class="text-muted"> {{ week2fee }}  </span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between bg-light">
+                    <div class="text-success">
+                        <h6 class="my-0">Week 2 CCS</h6>
+                        <small>Child care subsidy entitlement</small>
+                    </div>
+                    <span class="text-success"> {{ week2ccs }}  </span>
+                </li>
+
+
+
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>Week 2 gap </span>
+                    <strong><span id="totalgap2"> {{ week2gap }} </span> </strong>
+                </li>
+
+
+            </ul>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- <div class="row noprint">
+  <h2> Announcement </h2>
+  <p>You can now save your Centres fees for future quotes. Click the <a [routerLink]="['/login']" routerLinkActive="router-link-active" >Login link</a> to get started. 
+ To learn more, watch our <a target="_blank"  href="https://www.loom.com/share/d72c1696ee58420594f0d850adf2ebb8">recorded video.</a></p>
+</div> -->
+
+
+<!-- <app-home-printable 
+[ccspercentage]="ccs"
+[ccshours]="ccshrs"
+[week1fee]="week1fee"
+[week1ccs]="week1ccs"
+[week1gap]="week1gap"
+[week2fee]="week2fee"
+[week2ccs]="week2ccs"
+[week2gap]="week2gap"
+[showWeek2]="showWeek2"
+[selectedSessions]="selectedSessions"
+
+></app-home-printable> -->

@@ -1,0 +1,71 @@
+<header>
+  <nav
+    class="noprint navbar navbar-expand-sm navbar-toggleable-sm navbar-light  border-bottom box-shadow mb-3">
+  
+    <div class="container">
+      <!-- <a class="navbar-brand">CCS quotation</a> -->
+      <img src="/assets/logo.png" height="100" alt="CCS quotation logo" >
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target=".navbar-collapse"
+        aria-label="Toggle navigation"
+        [attr.aria-expanded]="isExpanded"
+        (click)="toggle()"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div
+        class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse"
+        [ngClass]="{ show: isExpanded }"
+      >
+        <ul class="navbar-nav flex-grow">
+        
+          <li *ngIf="!(loggedIn | async)" class="nav-item"
+              [routerLinkActive]="['link-active']"
+              [routerLinkActiveOptions]="{ exact: true }">
+            <a class="nav-link text-dark" [routerLink]="['/']">Home</a>
+          </li>
+
+          <li *ngIf="!(loggedIn | async)" class="nav-item" [routerLinkActive]="['link-active']">
+            <a class="nav-link text-dark" [routerLink]="['/faqs']">FAQs</a>
+          </li>
+
+          <li *ngIf="!(loggedIn | async)" class="nav-item" [routerLinkActive]="['link-active']">
+            <a class="nav-link text-dark" [routerLink]="['/contact-us']">Feedback</a>
+          </li>
+
+          <!-- <li *ngIf="!(loggedIn | async)" class="nav-item" [routerLinkActive]="['link-active']">
+            <a class="nav-link text-dark" [routerLink]="['/login']">Login</a>
+          </li> -->
+          <!-- <li *ngIf="(loggedIn | async)" class="nav-item" [routerLinkActive]="['link-active']">
+            <a class="nav-link text-dark" [routerLink]="['/home']">Home</a>
+          </li> -->
+          <li *ngIf="(loggedIn | async)" class="nav-item" [routerLinkActive]="['link-active']">
+            <a class="nav-link text-dark" [routerLink]="['/quote-portal/centre-quote']">Quote</a>
+          </li>
+          <li *ngIf="(loggedIn | async)" class="nav-item" [routerLinkActive]="['link-active']">
+            <a class="nav-link text-dark" [routerLink]="['/quote-portal/manage-centres']">Manage Centres</a>
+          </li>
+          <li *ngIf="(loggedIn | async)" class="nav-item" [routerLinkActive]="['link-active']">
+            <a class="nav-link text-dark" (click)="authService.SignOut()">Logout</a>
+          </li>
+   
+     
+
+          <!--<li class="nav-item" [routerLinkActive]="['link-active']">
+    <a class="nav-link text-dark" [routerLink]="['/embed-our-calculator']">Embed Our Calculator</a>
+  </li>
+  <li class="nav-item" [routerLinkActive]="['link-active']">
+    <a class="nav-link text-dark" [routerLink]="['/faqs']">FAQs</a>
+  </li>
+  <li class="nav-item" [routerLinkActive]="['link-active']">
+    <a class="nav-link text-dark" [routerLink]="['/about-ccs']">About CCS</a>
+  </li>-->
+        </ul>
+
+      </div>
+    </div>
+  </nav>
+</header>

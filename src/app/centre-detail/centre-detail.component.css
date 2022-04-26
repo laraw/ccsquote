@@ -1,0 +1,8 @@
+.actions a{
+    display: block;
+}
+
+.actions a.remove {
+    color: red;
+}
+

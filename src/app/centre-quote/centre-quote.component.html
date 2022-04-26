@@ -1,0 +1,411 @@
+<div>
+ 
+
+    <div class="row">
+        &nbsp;
+    </div>
+    <div class="row">
+      <div class="col">
+        <h4> Customer Details  </h4>
+        <div class="form-group">
+          <label for="">Parent name:</label>
+          <input type="text"
+            class="form-control" name="" id="" aria-describedby="helpId" placeholder="">
+          <!-- <small id="helpId" class="form-text text-muted">Help text</small> -->
+        </div>
+        <div class="form-group">
+          <label for="">Child name:</label>
+          <input type="text"
+            class="form-control" name="" id="" aria-describedby="helpId" placeholder="">
+          <!-- <small id="helpId" class="form-text text-muted">Help text</small> -->
+        </div>
+      </div>
+
+    </div>
+    &nbsp;
+    <div class="noprint">
+       <h4>Child care subsidy entitlements </h4>
+      </div>
+      <div class="row noprint">
+
+            
+          
+            <div class="col">
+
+                   <a href="javascript:void()" (click)="showIncomeActivity = false;">    I know the CCS % and hours   </a>
+           
+                
+               
+            </div>
+            <div class="col">
+                <a href="javascript:void()" (click)="showIncomeActivity = true;">    I need help calculating  CCS % and hours   </a>
+            </div>
+      
+      </div>
+      <div class="row noprint">
+          &nbsp;
+      </div>
+    
+      <div class="row noprint" *ngIf="showIncomeActivity">
+        <div class="col-md-6 mb-3">
+          <label for="income"> Enter your  yearly family taxable income:  </label>
+          <input [(ngModel)]="income" (blur)="calculateEntitlement()" name="income" id="income" type="number" min="0" max="999999" class="form-control" />
+    
+        </div>
+        <div class="col-md-6 mb-3 noprint">
+          <label for="activityhrs"> Select your activity hours across a fortnight: </label> <br />
+          <select class="form-control form-select mb-3" (change)="setActivityHours($event)" (blur)="calculateEntitlement()">
+            <option> -- Please select -- </option>
+    
+            <option> 8 to 16 hours </option>
+            <option> 17 to 48 hours </option>
+            <option> more than 48 hours </option>
+          </select>
+          <!--<input [(ngModel)]="activityhrs" name="activityhrs" id="activityhrs" type="number" min="0" max="120" class="form-control" />-->
+        </div>
+    
+      </div>
+      <!-- <div *ngIf="showIncomeActivity" class="row noprint">
+        <div class="col-md-6 mb-3">
+          &nbsp;
+        </div>
+        <div class="col-md-6 mb-3">
+    
+          <button class="float-right btn-info btn" (click)="calculateEntitlement()"> <i class="fa fa-arrow-right" aria-hidden="true"></i> Calculate entitlement </button>
+        </div>
+    
+      </div> -->
+
+      <div class="row noprint" *ngIf="!showIncomeActivity">
+        <div class="col-md-6 mb-3">
+          <label for="ccs">  CCS % </label>
+          <input [(ngModel)]="ccs" name="ccs" id="ccs" type="number" class="form-control" (change)="ccsValid($event)" />
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="ccshrs">  CCS hours </label>
+          <input [(ngModel)]="ccshrs" name="ccshrs" id="ccshrs" type="number" class="form-control" (change)="ccsValid($event)" />
+        </div>
+    
+      </div>
+
+    <div class="row"> &nbsp; </div>
+    <!-- <div class="row"> <h4> Calculate CCS </h4> </div> -->
+    <div class="row" *ngIf="showIncomeActivity">
+        
+
+              <div class="col">
+                  <div class="row">
+                      <strong>Result </strong>
+                  </div>
+                  <div class="row">
+                      <div class="col">
+                        CCS %
+                      </div>
+                      
+                  </div>
+                  <div class="row">
+                    <div class="col">
+                        CCS hrs
+                      </div>
+                  </div>
+              </div>
+              <div class="col">
+                <div class="row">&nbsp;</div>
+                <div class="row">
+                    <div class="col">  {{ ccs }} </div>
+                    
+                </div>
+                <div class="row">
+                    <div class="col">{{ ccshrs }} </div>
+                    
+                </div>
+            </div>
+            
+              
+              
+    </div>
+    <div class="row"> &nbsp; </div>
+    <h4> Booking pattern </h4>
+    <div class="row noprint">
+      <div *ngIf="!hasCentres" class="col">
+        To use this tool, you will need to setup your Centre and fees,
+        <a [routerLink]="['/quote-portal/manage-centres']" routerLinkActive="router-link-active">
+        click here to get started.
+        </a>
+      </div>
+    </div>
+    <div *ngIf="hasCentres" class="row noprint">
+      <div class="col">
+          <label class="form-label"> Select the Centre </label>
+       
+          <select class="form-control form-select" (change)="filterChangedCentre($event)">
+              <option selected>Please select</option>
+              <option value="{{ centre.id }}"  *ngFor="let centre of centres">{{ centre.name }} </option>
+            </select>
+      </div>
+    </div>
+    &nbsp;
+    <div *ngIf="hasCentres" class="row noprint">
+        <div class="col">
+            <label class="form-label"> Select the Room </label>
+         
+            <select class="form-control form-select" (change)="filterChanged($event.target.value)">
+                <option selected>Please select</option>
+                <option value="{{ room.id }}"  *ngFor="let room of rooms">{{ room.name }} </option>
+              </select>
+        </div>
+    </div>
+    <div class="row"> &nbsp; </div>
+    <div class="row">
+        <div class="col">
+            <h5 *ngIf="selectedRoom"> {{ selectedCentre }} - {{ selectedRoom.name }} </h5>
+        </div>
+    </div>
+    <div class="col">
+
+        
+         <form [formGroup]="quoteForm" (ngSubmit)="onSubmit()">
+          <div class="noprint" *ngIf="showWeek2">
+            Enter the hours and fees for each day of the fortnight.
+          </div>
+          <div *ngIf="showWeek2" class="noprint alert alert-warning" role="alert">
+            <a style="text-decoration: underline; color: royalblue;" (click)="numberweeks('week')"> Click here if the child is on a weekly booking pattern. </a>
+          </div>
+          <div class="noprint" *ngIf="!showWeek2">
+            Enter the hours and fees for each day of the week.
+          </div>
+          <div *ngIf="!showWeek2" class="noprint alert alert-warning" role="alert">
+            <a style="text-decoration: underline; color: royalblue;" (click)="numberweeks('fortnight')"> Click here if the child is on a fortnightly booking pattern.  </a>
+          </div>
+          <table class="table" id="room-quote">
+            <thead>
+              <tr>
+                
+                <th>
+                  Mon
+                </th>
+                <th>
+                  Tues
+                </th>
+                <th>
+                  Wed
+                </th>
+                <th>
+                  Thurs
+                </th>
+                <th>
+                  Fri
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngIf="showWeek2" class="week2hrs"> <td style="font-weight: 600">  Week 1 </td> <td> &nbsp; </td> <td> &nbsp; </td> <td> &nbsp; </td> <td> &nbsp; </td> </tr>
+              <tr class="week1hrs">
+                
+                <td>
+
+                  <div class="form-group">
+                    <label for="Session1">Hours</label>
+                    <select class="form-control" formControlName="Session1" id="Session1" dayid="1" (change)="addSessions($event)" >
+                        
+                        <option value="{{ session.length }}"  *ngFor="let session of sessions">{{ session.name }} </option>
+                      </select>
+                  </div>
+                </td>
+                <td>
+    
+                  <div class="form-group">
+                    <label for="Session1">Hours</label>
+                    <select class="form-control" dayid="2" formControlName="Session2" id="Session2" (change)="addSessions($event)">
+                        
+
+                        <option value="{{ session.length }}"  *ngFor="let session of sessions">{{ session.name }} </option>
+                      </select>  </div>
+                </td>
+                <td>
+       
+                  <div class="form-group">
+                    <label for="Session1">Hours</label>
+                    <select class="form-control" dayid="3" formControlName="Session3" id="Session3" (change)="addSessions($event)" >
+                       
+                        <option value="{{ session.length }}"  *ngFor="let session of sessions">{{ session.name }} </option>
+                      </select>   </div>
+                </td>
+                <td>
+                  
+                  <div class="form-group">
+                    <label for="Session1">Hours</label>
+                    <select class="form-control"  dayid="4" formControlName="Session4" id="Session4" (change)="addSessions($event)" >
+                        
+                        <option value="{{ session.length }}"  *ngFor="let session of sessions">{{ session.name }} </option>
+                      </select>   </div>
+                </td>
+                <td>
+    
+                  <div class="form-group">
+                    <label for="Session1">Hours</label>
+                    <select class="form-control" dayid="5" formControlName="Session5" id="Session5" (change)="addSessions($event)">
+                        =
+                        <option value="{{ session.length }}"  *ngFor="let session of sessions">{{ session.name }} </option>
+                      </select>
+                  </div>
+                </td>
+  
+              </tr>
+              <tr *ngIf="showWeek2" class="week2hrs"> <td style="font-weight: 600">  Week 2 </td> <td> &nbsp; </td> <td> &nbsp; </td> <td> &nbsp; </td> <td> &nbsp; </td> </tr>
+              <tr *ngIf="showWeek2" class="week2hrs">
+                
+                <td>
+ 
+                  <div class="form-group">
+                    <label for="Session1">Hours</label>
+                    <select class="form-control" dayid="6" formControlName="Session6" id="Session6" (change)="addSessions($event)">
+                        =
+                        <option value="{{ session.length }}"  *ngFor="let session of sessions">{{ session.name }} </option>
+                      </select>
+                  </div>
+                </td>
+                <td>
+                 
+                  <div class="form-group">
+                    <label for="Session1">Hours</label>
+                    <select class="form-control" dayid="7" formControlName="Session7" id="Session7" (change)="addSessions($event)">
+                        =
+                        <option value="{{ session.length }}"  *ngFor="let session of sessions">{{ session.name }} </option>
+                      </select>
+                  </div>
+                </td>
+                <td>
+     
+                  <div class="form-group">
+                    <label for="Session1">Hours</label>
+                    <select class="form-control" dayid="8" formControlName="Session8" id="Session8" (change)="addSessions($event)">
+                   
+                        <option value="{{ session.length }}"  *ngFor="let session of sessions">{{ session.name }} </option>
+                      </select>
+                  </div>
+                </td>
+                <td>
+             
+                  <div class="form-group">
+                    <label for="Session1">Hours</label>
+                    <select class="form-control"  dayid="9" formControlName="Session9" id="Session9" (change)="addSessions($event)">
+                        =
+                        <option value="{{ session.length }}"  *ngFor="let session of sessions">{{ session.name }} </option>
+                      </select>
+                  </div>
+                </td>
+                <td>
+     
+                  <div class="form-group">
+                    <label for="Session1">Hours</label>
+                    <select class="form-control" dayid="10" formControlName="Session10" id="Session10" (change)="addSessions($event)">
+                        <option selected>Select </option>
+                        <option value="{{ session.length }}"  *ngFor="let session of sessions">{{ session.name }} </option>
+                      </select>
+                  </div>
+                </td>
+  
+              </tr>
+  
+            </tbody>
+          </table>
+          <br />
+          <br />
+          <div class="row noprint">
+  
+            <div class="col-md-6 mb-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="schoolAged" [(ngModel)]="schoolAged" [ngModelOptions]="{standalone: true}" [checked]="schoolAged">
+                <label class="form-check-label" for="schoolAged">
+                  Is the child a school-aged child?
+                </label>
+              </div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="discount"> Discount %: </label>
+              <input name="discount" id="discount" [(ngModel)]="discount" class="form-control" [ngModelOptions]="{standalone: true}" type="number" />
+    
+            </div>
+          </div>
+  
+  
+          <div class="row noprint">
+            <div class="col">
+              <!-- <button class="btn btn-success" (click)="calculateCCS()" [disabled]="!ccsEntered || !sessionsEntered"> 
+                   <i class="fa fa-calculator" aria-hidden="true"></i> Calculate  </button> -->
+                   <button class="btn btn-success" (click)="calculateCCS()"> 
+                    <i class="fa fa-calculator" aria-hidden="true"></i> Calculate  </button>
+            </div>
+            <div class="col">
+              <button class="btn btn-dark" (click)="reset()"> <i class="fa fa-undo" aria-hidden="true"></i> Reset  </button>
+            </div>
+            <div class="col" >
+              <button class=" float-right btn btn-info" (click)="print()"> <i class="fa fa-print" aria-hidden="true"></i> Print  </button>
+            </div>
+          </div>
+        </form>
+  
+  
+  
+  
+  
+  
+  
+  
+      </div>
+      <div>&nbsp;</div>
+      <div class="col">
+        <h4 class="d-flex justify-content-between align-items-center mb-3">
+   Calculated CCS 
+  
+        </h4>
+        <ul class="list-group mb-3">
+          <li class="list-group-item d-flex justify-content-between lh-condensed">
+            <div>
+              <h6 class="my-0">Week 1 Fee</h6>
+              <small class="text-muted results-full-fee">Full fee</small>
+            </div>
+            <span class="text-muted"> {{ week1fee }}  </span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between bg-light">
+            <div class="text-success">
+              <h6 class="my-0">Week 1 CCS</h6>
+              <small>Child care subsidy entitlement</small>
+            </div>
+            <span> {{ week1ccs }}  </span>
+          </li>
+  
+  
+          <li class="list-group-item d-flex justify-content-between">
+            <span>Week 1 gap </span>
+            <strong><span> {{ week1gap }} </span></strong>
+          </li>
+          <li class="list-group-item d-flex justify-content-between lh-condensed">
+            <div>
+              <h6 class="my-0">Week 2 Fee</h6>
+              <small class="text-muted results-full-fee">Full fee</small>
+            </div>
+            <span class="text-muted"> {{ week2fee }}  </span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between bg-light">
+            <div class="text-success">
+              <h6 class="my-0">Week 2 CCS</h6>
+              <small>Child care subsidy entitlement</small>
+            </div>
+            <span class="text-success"> {{ week2ccs }}  </span>
+          </li>
+  
+  
+  
+          <li class="list-group-item d-flex justify-content-between">
+            <span>Week 2 gap </span>
+            <strong><span id="totalgap2"> {{ week2gap }} </span> </strong>
+          </li>
+  
+  
+        </ul>
+      </div>
+  
+    
+</div>

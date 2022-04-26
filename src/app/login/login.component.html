@@ -1,0 +1,48 @@
+
+<div class="row">
+    
+    <div class="col centered">
+        <div class="card card-signup text-center">
+            <div class="card-header ">
+                <h4 class="card-title">Login</h4>
+                <div class="social">
+                    <button (click)="authService.GoogleAuth()" class="btn btn-icon btn-round btn-dribbble"><i
+                            class="fa fa-google"></i></button>
+                            
+                
+                    <p class="card-description"> or be classical </p>
+                </div>
+            </div>
+            <div class="card-body ">
+                <form [formGroup]="loginForm" action="" class="form ng-untouched ng-pristine ng-valid" method="" novalidate="">
+             
+                    <div class="input-group">
+                        <div class="input-group-prepend"><span class="input-group-text"><i
+                                    class="fa fa-envelope"></i>&nbsp;</span></div><input formControlName="email" class="form-control"
+                            placeholder="Email..." type="email">
+                    </div>
+
+                    &nbsp;
+                    <div class="input-group">
+                        <div class="input-group-prepend"><span class="input-group-text"><i
+                                    class="fa fa-key"></i>&nbsp;</span></div><input formControlName="password" class="form-control"
+                            placeholder="Password..." type="password">
+                    </div>
+                   
+                </form>
+            </div>
+            <div class="card-footer "><a (click)="login()" class="btn btn-info btn-round" 
+                href="javascript:void(0)">Login</a>
+                <div> &nbsp; </div>
+                <div> OR </div>
+                
+                <a [routerLink]="['/register']" routerLinkActive="router-link-active"  class="btn btn-secondary btn-round" 
+                href="javascript:void(0)">Register</a>
+                <div>&nbsp;</div>
+                <a [routerLink]="['/forgot-password']" routerLinkActive="router-link-active" 
+                href="javascript:void(0)">Forgot your password?</a>
+                
+        </div>
+    </div>
+  
+</div>

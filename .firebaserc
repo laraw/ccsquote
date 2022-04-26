@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "ccsquotation": {
+      "hosting": {
+        "ccsquotation": [
+          "ccsquotation"
+        ]
+      }
+    }
+  }
+}

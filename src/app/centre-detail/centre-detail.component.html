@@ -1,0 +1,73 @@
+<div class="fadeIn first">
+  <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header"><h4 class="card-title">Rooms</h4></div>
+          <div class="card-body">
+            <div *ngIf="!showCentre">No rooms to display.</div>
+             <div class="table-responsive" *ngIf="showCentre">
+              <table class="table table-striped">
+                <thead class="">
+                  <th>Room Name</th>
+                  
+                  <th>Actions</th>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of rooms">
+                    <td> {{ item.name }}  </td>
+                    <td class='actions'> 
+                      <a class="link" routerLink="/quote-portal/room-detail/{{item.id}}" routerLinkActive="router-link-active"  >Manage sessions</a> 
+                     <a class="link remove" (click)="removeRoom(item)">Remove</a>
+                    </td>
+                  
+                   
+                  </tr>
+                  
+                </tbody>
+              </table>
+             
+              <!-- <nav *ngIf="totalPages > 1" aria-label="Page navigation ">
+                <ul class="pagination">
+                  <li  class="page-item"><a class="page-link" *ngIf="currentPage != 1" (click)="previous()">Previous</a></li>
+                  <li *ngFor="let in of counter(totalPages) ;let i = index" class="page-item"><a class="page-link" (click)="selectPage(i+1)">{{i + 1}} </a></li>
+      
+                  <li class="page-item"><a class="page-link" *ngIf="currentPage != totalPages" (click)="next()">Next</a></li>
+                </ul>
+              </nav> -->
+            </div>
+
+            <button class="btn btn-success float-right" (click)="open(content)"><i class="fa fa-plus"></i> Add Room</button>
+         
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #content let-modal>
+      <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Add room</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       
+        
+            
+            <div class="form-group">
+              <label for="">Room name</label>
+              <input type="text"
+                class="form-control" [(ngModel)]="roomName" name="" id="" aria-describedby="helpId" placeholder="">
+              <small id="helpId" class="form-text text-muted">The name of the Room</small>
+            </div>
+          
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" [disabled]="!this.roomName" (click)="save()">Save</button>
+      </div>
+    </ng-template>
+    
+    
+    
+    <!-- <pre>{{ closeResult }}</pre> -->
+  </div>
